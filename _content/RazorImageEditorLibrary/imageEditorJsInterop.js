@@ -402,3 +402,13 @@ export function removeAll(docManager) {
         doc.deleteAllPages();
     }
 }
+
+export function readCanvasData(canvas) {
+    if (!Dynamsoft) return;
+
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(function (blob) {
+            resolve(blob);
+        });
+    });
+}

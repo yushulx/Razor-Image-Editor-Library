@@ -1,0 +1,89 @@
+﻿@page "/"
+
+@inject IJSRuntime JSRuntime
+@using RazorImageEditorLibrary
+
+<PageTitle>Index</PageTitle>
+
+<div id="loading-indicator" class="loading-indicator" style="@(isLoading ? "display: flex;" : "display: none;")">
+    <div class="spinner"></div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <label>
+            Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
+                target="_blank">here</a>
+        </label>
+        <div class="filler"></div>
+        <input type="text" placeholder="@licenseKey" @bind="licenseKey">
+        <button @onclick="Activate">Activate SDK</button>
+    </div>
+
+    <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
+
+    <select id="sources" @onchange="e => OnChange(e)">
+        @foreach (var format in formats)
+        {
+            <option value="@format">@format</option>
+        }
+    </select>
+    <input type="checkbox" @bind="isZip" />Zip
+    <button @onclick="ConvertImage">Convert</button>
+
+    <div class="document-viewer">
+        <div id="browse-viewer"></div>
+    </div>
+
+    <div class="document-viewer">
+        <div id="edit-viewer"></div>
+    </div>
+</div>
+
+@code {
+    private string licenseKey =
+    "DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==";
+    private bool isLoading = false;
+    private ImageEditorJsInterop? imageEditorJsInterop;
+    private DocumentManager? documentManager;
+    private string[] formats = new string[] { ImageFormat.PDF, ImageFormat.TIFF, ImageFormat.JPEG, ImageFormat.PNG };
+    private string selectedValue = ImageFormat.PDF;
+    private ElementReference inputFile;
+    private bool isZip = false;
+
+    public async Task Activate()
+    {
+        if (imageEditorJsInterop == null) return;
+        isLoading = true;
+        await imageEditorJsInterop.SetLicense(licenseKey);
+        documentManager = await imageEditorJsInterop.CreateDocumentManager();
+        await documentManager.LoadPdfWasm();
+        await documentManager.CreateBrowseViewer("browse-viewer");
+        await documentManager.CreateEditViewer("edit-viewer");
+        
+        isLoading = false;
+    }
+
+    private async Task OnChange(ChangeEventArgs e)
+    {
+        selectedValue = e.Value.ToString();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        imageEditorJsInterop = new ImageEditorJsInterop(JSRuntime);
+        await imageEditorJsInterop.LoadJS();
+    }
+
+    public async Task LoadFile()
+    {
+        if (documentManager == null) return;
+        await documentManager.LoadFile(inputFile);
+    }
+
+    public async Task ConvertImage()
+    {
+        if (documentManager == null) return;
+        await documentManager.Convert("convert", selectedValue, isZip);
+    }
+}

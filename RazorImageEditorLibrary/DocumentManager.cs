@@ -11,6 +11,9 @@ namespace RazorImageEditorLibrary
         private IJSObjectReference _module;
         private IJSObjectReference _jsObjectReference;
         private IJSObjectReference? browseViewer = null, editViewer = null;
+        private DotNetObjectReference<DocumentManager> objRef;
+        private bool _disposed = false;
+
         /// <summary>
         /// Initializes a new instance of the DocumentNormalizer class.
         /// </summary>
@@ -20,6 +23,28 @@ namespace RazorImageEditorLibrary
         {
             _module = module;
             _jsObjectReference = normalizer;
+            objRef = DotNetObjectReference.Create(this);
+        }
+
+        /// <summary>
+        /// Release unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed == false)
+            {
+                objRef.Dispose();
+                _disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Destructor for the DocumentManager class.
+        /// </summary>
+        ~DocumentManager()
+        {
+            if (_disposed == false)
+                Dispose();
         }
 
         public async Task LoadFile(ElementReference inputFile)
@@ -38,7 +63,7 @@ namespace RazorImageEditorLibrary
 
         public async Task CreateBrowseViewer(string elementId)
         {
-            browseViewer = await _module.InvokeAsync<IJSObjectReference>("createBrowseViewer", _jsObjectReference, elementId);
+            browseViewer = await _module.InvokeAsync<IJSObjectReference>("createBrowseViewer", _jsObjectReference, elementId, objRef, "OnPageIndexChanged");
         }
 
         public async Task CreateEditViewer(string elementId)
@@ -54,6 +79,15 @@ namespace RazorImageEditorLibrary
         public async Task LoadPdfWasm()
         {
             await _module.InvokeVoidAsync("loadPdfWasm", _jsObjectReference);
+        }
+
+        [JSInvokable]
+        public async Task OnPageIndexChanged(int index)
+        {
+            if (editViewer != null)
+            {
+                await _module.InvokeVoidAsync("goToPage", editViewer, index);
+            }
         }
     }
 }

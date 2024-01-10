@@ -72,8 +72,55 @@ export function createEditViewer(docManager, elementId) {
     if (!Dynamsoft) return;
 
     try {
+        let config = {
+            type: Dynamsoft.DDV.Elements.Layout,
+                flexDirection: "column",
+                    className: "ddv-edit-viewer-desktop",
+                        children: [
+                            {
+                                type: Dynamsoft.DDV.Elements.Layout,
+                                className: "ddv-edit-viewer-header-desktop",
+                                children: [
+                                    {
+                                        type: Dynamsoft.DDV.Elements.Layout,
+                                        children: [
+                                            Dynamsoft.DDV.Elements.ThumbnailSwitch,
+                                            Dynamsoft.DDV.Elements.Zoom,
+                                            Dynamsoft.DDV.Elements.FitMode,
+                                            Dynamsoft.DDV.Elements.DisplayMode,
+                                            Dynamsoft.DDV.Elements.RotateLeft,
+                                            Dynamsoft.DDV.Elements.RotateRight,
+                                            Dynamsoft.DDV.Elements.Crop,
+                                            Dynamsoft.DDV.Elements.Filter,
+                                            Dynamsoft.DDV.Elements.Undo,
+                                            Dynamsoft.DDV.Elements.Redo,
+                                            Dynamsoft.DDV.Elements.DeleteCurrent,
+                                            Dynamsoft.DDV.Elements.DeleteAll,
+                                            Dynamsoft.DDV.Elements.Pan,
+                                        ],
+                                    },
+                                    {
+                                        type: Dynamsoft.DDV.Elements.Layout,
+                                        children: [
+                                            {
+                                                type: Dynamsoft.DDV.Elements.Pagination,
+                                                className: "ddv-edit-viewer-pagination-desktop",
+                                            },
+                                            //Dynamsoft.DDV.Elements.Load,
+                                            //Dynamsoft.DDV.Elements.Download,
+                                            //Dynamsoft.DDV.Elements.Print,
+                                        ],
+                                    },
+                                ],
+                            },
+                            Dynamsoft.DDV.Elements.MainView,
+                        ],
+};
+
+
         let editViewer = new Dynamsoft.DDV.EditViewer({
             container: document.getElementById(elementId),
+            uiConfig: config,
         });
         openDocument(docManager, editViewer);
         return editViewer;
@@ -140,7 +187,11 @@ export async function convert(docManager, filename, format, isZip, browseViewer)
     try {
         let doc = docManager.getAllDocuments()[0];
         let result = null;
-        let indices = browseViewer == null ? createNumberArray(doc.pages.length) : browseViewer.getSelectedPages();
+        let indices = browseViewer == null ? createNumberArray(doc.pages.length) : browseViewer.getSelectedPageIndices();
+        let count = indices.length;
+
+        if (count == 0) return;
+
         switch (format) {
             case "pdf":
                 // https://www.dynamsoft.com/document-viewer/docs/api/interface/idocument/index.html#savetopdf
@@ -175,7 +226,7 @@ export async function convert(docManager, filename, format, isZip, browseViewer)
             case "png":
                 {
                     // https://www.dynamsoft.com/document-viewer/docs/api/interface/idocument/index.html#savetopng
-                    let count = indices.length;
+                    
 
                     if (zip != null) {
                         for (let i = 0; i < count; i++) {
@@ -203,8 +254,6 @@ export async function convert(docManager, filename, format, isZip, browseViewer)
                     const settings = {
                         quality: 80,
                     };
-
-                    let count = indices.length;
 
                     if (zip != null) {
                         for (let i = 0; i < count; i++) {
@@ -292,7 +341,6 @@ export async function loadPage(docManager, blob) {
         let docs = docManager.getAllDocuments();
         let doc = docs.length == 0 ? docManager.createDocument() : docs[0];
         let pages = await doc.loadSource(blob);
-        console.log(pages);
     }
     catch (ex) {
         console.error(ex);

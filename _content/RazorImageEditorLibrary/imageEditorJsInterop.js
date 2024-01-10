@@ -122,6 +122,7 @@ export function createEditViewer(docManager, elementId) {
             container: document.getElementById(elementId),
             uiConfig: config,
         });
+        editViewer.displayMode = "single"
         openDocument(docManager, editViewer);
         return editViewer;
     }
@@ -132,7 +133,7 @@ export function createEditViewer(docManager, elementId) {
 
 }
 
-export function createBrowseViewer(docManager, elementId) {
+export function createBrowseViewer(docManager, elementId, dotNetHelper, cbName) {
     if (!Dynamsoft) return;
 
     try {
@@ -140,6 +141,9 @@ export function createBrowseViewer(docManager, elementId) {
             container: document.getElementById(elementId),
         });
         browseViewer.multiselectMode = true;
+        browseViewer.on("currentIndexChanged", (e) => {
+            dotNetHelper.invokeMethodAsync(cbName, e.newIndex);
+        });
         openDocument(docManager, browseViewer);
         return browseViewer;
     }
@@ -346,14 +350,20 @@ export async function loadPage(docManager, blob, browseViewer, editViewer) {
                 selectedIndices.push(i + index);
             }
             browseViewer.selectPages(selectedIndices);
-            browseViewer.goToPage(index);
+            goToPage(browseViewer, index);
 
             if (editViewer) {
-                editViewer.goToPage(index);
+                goToPage(editViewer, index);
             }
         }
     }
     catch (ex) {
         console.error(ex);
+    }
+}
+
+export function goToPage(viewer, index) {
+    if (viewer != null) {
+        viewer.goToPage(index);
     }
 }

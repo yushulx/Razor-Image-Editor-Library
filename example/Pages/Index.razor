@@ -2,6 +2,8 @@
 
 @inject IJSRuntime JSRuntime
 @using RazorImageEditorLibrary
+@using RazorCameraLibrary
+@using Camera = RazorCameraLibrary.Camera
 
 <PageTitle>Index</PageTitle>
 
@@ -10,43 +12,74 @@
     <div class="spinner"></div>
 </div>
 
-<div class="container">
-    <h1>Image Editor</h1>
-    <div class="row">
-        <label>
-            Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
-                                      target="_blank">here</a>
-        </label>
-        <div class="filler"></div>
-        <input type="text" placeholder="@licenseKey" @bind="licenseKey">
-        <button @onclick="Activate">Activate SDK</button>
-    </div>
-    <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
-    <button @onclick="Toggle">@buttonText</button>
-    <div style="margin: 10px 0;">
-        <button @onclick="SelectAll">Select All</button>
-        <button @onclick="UnselectAll">Unselect All</button>
-        <button @onclick="RemoveSelected">Remove Selected</button>
-        <button @onclick="RemoveAll">Remove All</button>
-    </div>
-    
-    <div style="margin: 10px 0;">
-        <select id="sources" @onchange="e => OnChange(e)">
-            @foreach (var format in formats)
-            {
-                <option value="@format">@format</option>
-            }
-        </select>
-        <input type="checkbox" @bind="isZip" style="margin: 0 2px;" />Zip
-        <button @onclick="ConvertImage">Convert</button>
-    </div>
-    
-</div>
 
-<div class="editor" style="@(isReady ? "display: flex;" : "display: none;")">
+
+@* <div class="editor" style="@(isReady ? "display: flex;" : "display: none;")">
     <div class="container">
         
 
+        <div class="document-viewer">
+            <div id="browse-viewer"></div>
+        </div>
+    </div>
+
+    <div class="container" style="@(showEditor ? "display: block;" : "display: none;")">
+        <div class="document-viewer">
+            <div id="edit-viewer"></div>
+        </div>
+    </div>
+</div> *@
+
+<div id="imageGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 600px);gap: 5px;">
+    <div class="container">
+        <h1>Image Editor</h1>
+        <div class="row">
+            <label>
+                Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
+                                          target="_blank">here</a>
+            </label>
+            <div class="filler"></div>
+            <input type="text" placeholder="@licenseKey" @bind="licenseKey">
+            <button @onclick="Activate">Activate SDK</button>
+        
+        </div>
+        <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
+        <button @onclick="Toggle">@buttonText</button>
+        <div style="margin: 10px 0;">
+            <button @onclick="SelectAll">Select All</button>
+            <button @onclick="UnselectAll">Unselect All</button>
+            <button @onclick="RemoveSelected">Remove Selected</button>
+            <button @onclick="RemoveAll">Remove All</button>
+        </div>
+    
+        <div style="margin: 10px 0;">
+            <select id="sources" @onchange="e => OnChange(e)">
+                @foreach (var format in formats)
+                {
+                    <option value="@format">@format</option>
+                }
+            </select>
+            <input type="checkbox" @bind="isZip" style="margin: 0 2px;" />Zip
+            <button @onclick="ConvertImage">Convert</button>
+        </div>
+    
+    </div>
+
+    <div class="container">
+        <button @onclick="GetCameras">Get Cameras</button>
+        <select id="camerasources" @onchange="e => OnCameraChange(e)">
+            @foreach (var camera in cameras)
+            {
+                <option value="@camera.DeviceId">@camera.Label</option>
+            }
+        </select>
+        <button @onclick="Capture">Capture</button>
+        <div id="videoview">
+            <div id="videoContainer"></div>
+        </div>
+    </div>
+    
+    <div class="container">
         <div class="document-viewer">
             <div id="browse-viewer"></div>
         </div>
@@ -74,6 +107,10 @@
     private string buttonText = "Hide Editor";
     private bool isReady = false;
 
+    private List<Camera> cameras = new List<Camera>();
+    private CameraJsInterop? cameraJsInterop;
+    private CameraEnhancer? cameraEnhancer;
+
     public async Task Activate()
     {
         if (imageEditorJsInterop == null) return;
@@ -87,6 +124,18 @@
         isLoading = false;
     }
 
+    private async Task OnCameraChange(ChangeEventArgs e)
+    {
+        if (cameraEnhancer != null)
+        {
+            await cameraEnhancer.CloseCamera();
+
+            selectedValue = e.Value.ToString();
+
+            await OpenCamera();
+        }
+    }
+
     private async Task OnChange(ChangeEventArgs e)
     {
         selectedValue = e.Value.ToString();
@@ -96,6 +145,12 @@
     {
         imageEditorJsInterop = new ImageEditorJsInterop(JSRuntime);
         await imageEditorJsInterop.LoadJS();
+
+        cameraJsInterop = new CameraJsInterop(JSRuntime);
+        await cameraJsInterop.LoadJS();
+
+        cameraEnhancer = await cameraJsInterop.CreateCameraEnhancer();
+        await cameraEnhancer.SetVideoElement("videoContainer");
     }
 
     public async Task LoadFile()
@@ -150,5 +205,47 @@
     {
         if (documentManager == null) return;
         await documentManager.RemoveAll();
+    }
+
+    public async Task GetCameras()
+    {
+        if (cameraEnhancer == null) return;
+        try
+        {
+            cameras = await cameraEnhancer.GetCameras();
+            if (cameras.Count >= 0)
+            {
+                selectedValue = cameras[0].DeviceId;
+                await OpenCamera();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    public async Task OpenCamera()
+    {
+        if (cameraEnhancer == null) return;
+        try
+        {
+            int selectedIndex = cameras.FindIndex(camera => camera.DeviceId == selectedValue);
+            await cameraEnhancer.SetResolution(640, 480);
+            await cameraEnhancer.OpenCamera(cameras[selectedIndex]);
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    public async Task Capture()
+    {
+        if (cameraEnhancer == null || documentManager == null) return;
+
+        IJSObjectReference canvas = await cameraEnhancer.AcquireCameraFrame();
+        await documentManager.LoadCanvas(canvas);
     }
 }

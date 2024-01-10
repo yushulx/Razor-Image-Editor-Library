@@ -116,5 +116,11 @@ namespace RazorImageEditorLibrary
         {
             await _module.InvokeVoidAsync("removeAll", _jsObjectReference);
         }
+
+        public async Task LoadCanvas(IJSObjectReference canvas)
+        {
+            IJSObjectReference blob = await _module.InvokeAsync<IJSObjectReference>("readCanvasData", canvas);
+            await _module.InvokeVoidAsync("loadPage", _jsObjectReference, blob, browseViewer, editViewer);
+        }
     }
 }

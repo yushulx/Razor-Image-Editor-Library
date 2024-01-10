@@ -153,7 +153,7 @@ a, .btn-link {
 
 .document-viewer {
     width: 640px;
-    height: 640px;
+    height: 560px;
     margin: 10px auto;
 }
 
@@ -180,4 +180,26 @@ a, .btn-link {
     display: flex;
     margin: 10px auto;
     align-items: center;
+}
+
+#videoview {
+    position: relative;
+    width: 100%;
+    height: 40vh;
+}
+
+#videoContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1
+}
+
+#imageGrid {
+    width: 1280px;
+    height: 720px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
 }

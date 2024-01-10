@@ -87,7 +87,6 @@ export function createEditViewer(docManager, elementId) {
                                             Dynamsoft.DDV.Elements.ThumbnailSwitch,
                                             Dynamsoft.DDV.Elements.Zoom,
                                             Dynamsoft.DDV.Elements.FitMode,
-                                            Dynamsoft.DDV.Elements.DisplayMode,
                                             Dynamsoft.DDV.Elements.RotateLeft,
                                             Dynamsoft.DDV.Elements.RotateRight,
                                             Dynamsoft.DDV.Elements.Crop,
@@ -96,7 +95,6 @@ export function createEditViewer(docManager, elementId) {
                                             Dynamsoft.DDV.Elements.Redo,
                                             Dynamsoft.DDV.Elements.DeleteCurrent,
                                             Dynamsoft.DDV.Elements.DeleteAll,
-                                            Dynamsoft.DDV.Elements.Pan,
                                         ],
                                     },
                                     {
@@ -106,9 +104,6 @@ export function createEditViewer(docManager, elementId) {
                                                 type: Dynamsoft.DDV.Elements.Pagination,
                                                 className: "ddv-edit-viewer-pagination-desktop",
                                             },
-                                            //Dynamsoft.DDV.Elements.Load,
-                                            //Dynamsoft.DDV.Elements.Download,
-                                            //Dynamsoft.DDV.Elements.Print,
                                         ],
                                     },
                                 ],
@@ -365,5 +360,45 @@ export async function loadPage(docManager, blob, browseViewer, editViewer) {
 export function goToPage(viewer, index) {
     if (viewer != null) {
         viewer.goToPage(index);
+    }
+}
+
+export function toggleViewer(viewer, show) {
+    if (viewer != null) {
+        if (show) {
+            viewer.show();
+        }
+        else {
+            viewer.hide();
+        }
+    }
+}
+
+export function selectAll(viewer) {
+    if (viewer != null) {
+        viewer.selectAllPages();
+    }
+}
+
+export function unselectAll(viewer) {
+    if (viewer != null) {
+        viewer.selectPages([]);
+    }
+}
+
+export function removeSelected(docManager, viewer) {
+    if (viewer != null) {
+        let selectedIndices = viewer.getSelectedPageIndices();
+        let docs = docManager.getAllDocuments();
+        let doc = docs.length == 0 ? docManager.createDocument() : docs[0];
+        doc.deletePages(selectedIndices);
+    }
+}
+
+export function removeAll(docManager) {
+    if (docManager != null) {
+        let docs = docManager.getAllDocuments();
+        let doc = docs.length == 0 ? docManager.createDocument() : docs[0];
+        doc.deleteAllPages();
     }
 }

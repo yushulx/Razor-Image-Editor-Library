@@ -5,41 +5,54 @@
 
 <PageTitle>Index</PageTitle>
 
+
 <div id="loading-indicator" class="loading-indicator" style="@(isLoading ? "display: flex;" : "display: none;")">
     <div class="spinner"></div>
 </div>
 
-<div class="editor">
-    <div class="container">
-        <div class="row">
-            <label>
-                Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
-                                          target="_blank">here</a>
-            </label>
-            <div class="filler"></div>
-            <input type="text" placeholder="@licenseKey" @bind="licenseKey">
-            <button @onclick="Activate">Activate SDK</button>
-        </div>
-
-        <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
-
+<div class="container">
+    <h1>Image Editor</h1>
+    <div class="row">
+        <label>
+            Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
+                                      target="_blank">here</a>
+        </label>
+        <div class="filler"></div>
+        <input type="text" placeholder="@licenseKey" @bind="licenseKey">
+        <button @onclick="Activate">Activate SDK</button>
+    </div>
+    <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
+    <button @onclick="Toggle">@buttonText</button>
+    <div style="margin: 10px 0;">
+        <button @onclick="SelectAll">Select All</button>
+        <button @onclick="UnselectAll">Unselect All</button>
+        <button @onclick="RemoveSelected">Remove Selected</button>
+        <button @onclick="RemoveAll">Remove All</button>
+    </div>
+    
+    <div style="margin: 10px 0;">
         <select id="sources" @onchange="e => OnChange(e)">
             @foreach (var format in formats)
             {
                 <option value="@format">@format</option>
             }
         </select>
-        <input type="checkbox" @bind="isZip" />Zip
+        <input type="checkbox" @bind="isZip" style="margin: 0 2px;" />Zip
         <button @onclick="ConvertImage">Convert</button>
+    </div>
+    
+</div>
+
+<div class="editor" style="@(isReady ? "display: flex;" : "display: none;")">
+    <div class="container">
+        
 
         <div class="document-viewer">
             <div id="browse-viewer"></div>
         </div>
-
-
     </div>
 
-    <div class="container">
+    <div class="container" style="@(showEditor ? "display: block;" : "display: none;")">
         <div class="document-viewer">
             <div id="edit-viewer"></div>
         </div>
@@ -57,6 +70,9 @@
     private string selectedValue = ImageFormat.PDF;
     private ElementReference inputFile;
     private bool isZip = false;
+    private bool showEditor = true;
+    private string buttonText = "Hide Editor";
+    private bool isReady = false;
 
     public async Task Activate()
     {
@@ -67,7 +83,7 @@
         await documentManager.LoadPdfWasm();
         await documentManager.CreateBrowseViewer("browse-viewer");
         await documentManager.CreateEditViewer("edit-viewer");
-        
+        isReady = true;
         isLoading = false;
     }
 
@@ -92,5 +108,45 @@
     {
         if (documentManager == null) return;
         await documentManager.Convert("convert", selectedValue, isZip);
+    }
+
+    public void Toggle()
+    {
+        if (documentManager == null) return;
+
+        if (showEditor)
+        {
+            showEditor = false;
+            buttonText = "Show Editor";
+        }
+        else
+        {
+            buttonText = "Hide Editor";
+            showEditor = true;
+        }
+    }
+
+    public async Task SelectAll()
+    {
+        if (documentManager == null) return;
+        await documentManager.SelectAll();
+    }
+
+    public async Task UnselectAll()
+    {
+        if (documentManager == null) return;
+        await documentManager.UnselectAll();
+    }
+
+    public async Task RemoveSelected()
+    {
+        if (documentManager == null) return;
+        await documentManager.RemoveSelected();
+    }
+
+    public async Task RemoveAll()
+    {
+        if (documentManager == null) return;
+        await documentManager.RemoveAll();
     }
 }

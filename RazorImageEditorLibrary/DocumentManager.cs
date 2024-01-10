@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Microsoft.JSInterop.Implementation;
-using System.Reflection.Metadata;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace RazorImageEditorLibrary
 {
@@ -88,6 +85,36 @@ namespace RazorImageEditorLibrary
             {
                 await _module.InvokeVoidAsync("goToPage", editViewer, index);
             }
+        }
+
+        public async Task ShowEditor()
+        {
+            await _module.InvokeVoidAsync("toggleViewer", editViewer, true);
+        }
+
+        public async Task HideEditor()
+        {
+            await _module.InvokeVoidAsync("toggleViewer", editViewer, false);
+        }
+
+        public async Task SelectAll()
+        {
+            await _module.InvokeVoidAsync("selectAll", browseViewer);
+        }
+
+        public async Task UnselectAll()
+        {
+            await _module.InvokeVoidAsync("unselectAll", browseViewer);
+        }
+
+        public async Task RemoveSelected()
+        {
+            await _module.InvokeVoidAsync("removeSelected", _jsObjectReference, browseViewer);
+        }
+
+        public async Task RemoveAll()
+        {
+            await _module.InvokeVoidAsync("removeAll", _jsObjectReference);
         }
     }
 }

@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "example.dll": "sha256-f0qg+VXxDIKU7CpyGw9dw1SmNIvlm1e7U6W4Zo3gdJU=",
+      "example.dll": "sha256-VnxpFXpsb2gKwxENM7U1fBh0aZJVSeap+HFOGr2dUrs=",
       "Microsoft.AspNetCore.Components.dll": "sha256-BQlt3BWX9CZjO7SfK4x64dwoAz1Z+Bq4Gvi9lNCrGLM=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-vFyhxmfvFAitJ4JiLPxjagOq6kefT7EtwXu\/rb60iy8=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-XYM80863rCSqPKTIFsPNKnli9FGEN6ydRhJq9gbYJAE=",
@@ -22,7 +22,7 @@
       "Microsoft.Extensions.Primitives.dll": "sha256-eXvGx2jcjpTPEJoAHBsW\/VuMPbNyyU+AsuhPmkzSSRY=",
       "Microsoft.JSInterop.dll": "sha256-HNgWYxTTfU7dGASyHHq\/QmETxRHHFlv3ZsNo+PhNnHU=",
       "Microsoft.JSInterop.WebAssembly.dll": "sha256-bzbqcJ6KmXNtttCdwlY3JqqzIuFo0rRDUc7qjI8CKYM=",
-      "RazorImageEditorLibrary.dll": "sha256-sAuWn5T4xhW6978E6iJLkB+cNTSBvB5V2E0r\/YQtvww=",
+      "RazorImageEditorLibrary.dll": "sha256-2t0QDu+qrG7zd+evHo9Dh0o\/Lasniw\/ZgdyJdeRGrpI=",
       "System.Collections.Concurrent.dll": "sha256-hXTBz18yeWUMxEyR7Caga31HQ0hgxhmkYg4zW21X2TA=",
       "System.Collections.dll": "sha256-X0oVgNmcNbg6NSjT+2w5V3PXFysUVV2PRUoUsLiP37s=",
       "System.ComponentModel.dll": "sha256-Fk2YdbIh1S9I3Jn+elQpV9RdU2OqJiVenl74EbfuW34=",

@@ -50,7 +50,6 @@
     private string selectedValue = ImageFormat.PDF;
     private ElementReference inputFile;
     private bool isZip = false;
-    IJSObjectReference? browseViewer = null, editViewer = null;
 
     public async Task Activate()
     {
@@ -59,8 +58,8 @@
         await imageEditorJsInterop.SetLicense(licenseKey);
         documentManager = await imageEditorJsInterop.CreateDocumentManager();
         await documentManager.LoadPdfWasm();
-        browseViewer = await documentManager.CreateBrowseViewer("browse-viewer");
-        editViewer = await documentManager.CreateEditViewer("edit-viewer");
+        await documentManager.CreateBrowseViewer("browse-viewer");
+        await documentManager.CreateEditViewer("edit-viewer");
         
         isLoading = false;
     }
@@ -85,6 +84,6 @@
     public async Task ConvertImage()
     {
         if (documentManager == null) return;
-        await documentManager.Convert("convert", selectedValue, isZip, browseViewer);
+        await documentManager.Convert("convert", selectedValue, isZip);
     }
 }

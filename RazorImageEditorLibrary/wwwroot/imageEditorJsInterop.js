@@ -139,6 +139,7 @@ export function createBrowseViewer(docManager, elementId) {
         let browseViewer = new Dynamsoft.DDV.BrowseViewer({
             container: document.getElementById(elementId),
         });
+        browseViewer.multiselectMode = true;
         openDocument(docManager, browseViewer);
         return browseViewer;
     }
@@ -154,11 +155,6 @@ export function openDocument(docManager, viewer) {
     let docs = docManager.getAllDocuments();
     let doc = docs.length == 0 ? docManager.createDocument() : docs[0];
     viewer.openDocument(doc.uid);
-}
-
-export function goToPage(number, viewer) {
-    if (!docManager) return;
-    viewer.goToPage(number);
 }
 
 function saveBlob(blob, fileName) {
@@ -334,13 +330,28 @@ export function readFileData(element, index) {
     });    
 }
 
-export async function loadPage(docManager, blob) {
+export async function loadPage(docManager, blob, browseViewer, editViewer) {
     if (!Dynamsoft) return;
 
     try {
         let docs = docManager.getAllDocuments();
         let doc = docs.length == 0 ? docManager.createDocument() : docs[0];
+        let index = doc.pages.length;
         let pages = await doc.loadSource(blob);
+        
+        if (browseViewer) {
+            
+            let selectedIndices = browseViewer.getSelectedPageIndices();
+            for (let i = 0; i < pages.length; i++) {
+                selectedIndices.push(i + index);
+            }
+            browseViewer.selectPages(selectedIndices);
+            browseViewer.goToPage(index);
+
+            if (editViewer) {
+                editViewer.goToPage(index);
+            }
+        }
     }
     catch (ex) {
         console.error(ex);

@@ -10,7 +10,7 @@ namespace RazorImageEditorLibrary
     {
         private IJSObjectReference _module;
         private IJSObjectReference _jsObjectReference;
-
+        private IJSObjectReference? browseViewer = null, editViewer = null;
         /// <summary>
         /// Initializes a new instance of the DocumentNormalizer class.
         /// </summary>
@@ -31,22 +31,22 @@ namespace RazorImageEditorLibrary
                 {
                     IJSObjectReference blob = await _module.InvokeAsync<IJSObjectReference>("readFileData", inputFile, i);
 
-                    await _module.InvokeVoidAsync("loadPage", _jsObjectReference, blob);
+                    await _module.InvokeVoidAsync("loadPage", _jsObjectReference, blob, browseViewer, editViewer);
                 }
             }
         }
 
-        public async Task<IJSObjectReference?> CreateBrowseViewer(string elementId)
+        public async Task CreateBrowseViewer(string elementId)
         {
-            return await _module.InvokeAsync<IJSObjectReference>("createBrowseViewer", _jsObjectReference, elementId);
+            browseViewer = await _module.InvokeAsync<IJSObjectReference>("createBrowseViewer", _jsObjectReference, elementId);
         }
 
-        public async Task<IJSObjectReference?> CreateEditViewer(string elementId)
+        public async Task CreateEditViewer(string elementId)
         {
-            return await _module.InvokeAsync<IJSObjectReference>("createEditViewer", _jsObjectReference, elementId);
+            editViewer = await _module.InvokeAsync<IJSObjectReference>("createEditViewer", _jsObjectReference, elementId);
         }
 
-        public async Task Convert(string filename, string format, bool isZip, IJSObjectReference? browseViewer = null)
+        public async Task Convert(string filename, string format, bool isZip)
         {
             await _module.InvokeVoidAsync("convert", _jsObjectReference, filename, format, isZip, browseViewer);
         }

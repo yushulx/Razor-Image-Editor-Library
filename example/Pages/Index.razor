@@ -107,7 +107,9 @@
     public async Task ConvertImage()
     {
         if (documentManager == null) return;
+        isLoading = true;
         await documentManager.Convert("convert", selectedValue, isZip);
+        isLoading = false;
     }
 
     public void Toggle()

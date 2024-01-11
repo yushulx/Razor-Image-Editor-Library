@@ -103,6 +103,7 @@
     private List<Camera> cameras = new List<Camera>();
     private CameraJsInterop? cameraJsInterop;
     private CameraEnhancer? cameraEnhancer;
+    private string selectedCamera = string.Empty;
 
     public async Task Activate()
     {
@@ -127,7 +128,7 @@
         {
             await cameraEnhancer.CloseCamera();
 
-            selectedValue = e.Value.ToString();
+            selectedCamera = e.Value.ToString();
 
             await OpenCamera();
         }
@@ -212,7 +213,7 @@
             cameras = await cameraEnhancer.GetCameras();
             if (cameras.Count >= 0)
             {
-                selectedValue = cameras[0].DeviceId;
+                selectedCamera = cameras[0].DeviceId;
                 await OpenCamera();
             }
         }
@@ -227,7 +228,7 @@
         if (cameraEnhancer == null) return;
         try
         {
-            int selectedIndex = cameras.FindIndex(camera => camera.DeviceId == selectedValue);
+            int selectedIndex = cameras.FindIndex(camera => camera.DeviceId == selectedCamera);
             await cameraEnhancer.SetResolution(640, 480);
             await cameraEnhancer.OpenCamera(cameras[selectedIndex]);
 

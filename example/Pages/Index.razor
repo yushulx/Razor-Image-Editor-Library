@@ -243,7 +243,14 @@
     {
         if (cameraEnhancer == null || documentManager == null) return;
 
-        IJSObjectReference canvas = await cameraEnhancer.AcquireCameraFrame();
-        await documentManager.LoadCanvas(canvas);
+        try
+        {
+            IJSObjectReference canvas = await cameraEnhancer.AcquireCameraFrame();
+            await documentManager.LoadCanvas(canvas);   
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }

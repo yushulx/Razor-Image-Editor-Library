@@ -16,8 +16,7 @@
     <div class="container">
         <h1>Image Editor</h1>
         <div class="row">
-            <label>
-                Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
+            <label>Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
                                           target="_blank">here</a>
             </label>
             <div class="filler"></div>
@@ -25,16 +24,35 @@
             <button @onclick="Activate">Activate SDK</button>
         
         </div>
-        <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
-        <button @onclick="Toggle">@buttonText</button>
+
         <div style="margin: 10px 0;">
+            <b>File source: </b>
+            <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
+            <button @onclick="Toggle">@buttonText</button>
+        </div>
+
+        <div style="margin: 10px 0;">
+            <b>Camera source: </b>
+            <button @onclick="GetCameras">Get Cameras</button>
+            <select id="camerasources" @onchange="e => OnCameraChange(e)">
+                @foreach (var camera in cameras)
+                {
+                    <option value="@camera.DeviceId">@camera.Label</option>
+                }
+            </select>
+            <button @onclick="Capture">Capture</button>
+        </div>
+
+        <div style="margin: 10px 0;">
+            <b>File operations:</b>
             <button @onclick="SelectAll">Select All</button>
             <button @onclick="UnselectAll">Unselect All</button>
             <button @onclick="RemoveSelected">Remove Selected</button>
             <button @onclick="RemoveAll">Remove All</button>
         </div>
-    
+
         <div style="margin: 10px 0;">
+            <b>File format conversion:</b>
             <select id="sources" @onchange="e => OnChange(e)">
                 @foreach (var format in formats)
                 {
@@ -48,14 +66,7 @@
     </div>
 
     <div class="container">
-        <button @onclick="GetCameras">Get Cameras</button>
-        <select id="camerasources" @onchange="e => OnCameraChange(e)">
-            @foreach (var camera in cameras)
-            {
-                <option value="@camera.DeviceId">@camera.Label</option>
-            }
-        </select>
-        <button @onclick="Capture">Capture</button>
+        
         <div id="videoview">
             <div id="videoContainer"></div>
         </div>

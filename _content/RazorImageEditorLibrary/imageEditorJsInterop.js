@@ -84,7 +84,6 @@ export function createEditViewer(docManager, elementId) {
                                     {
                                         type: Dynamsoft.DDV.Elements.Layout,
                                         children: [
-                                            Dynamsoft.DDV.Elements.ThumbnailSwitch,
                                             Dynamsoft.DDV.Elements.Zoom,
                                             Dynamsoft.DDV.Elements.FitMode,
                                             Dynamsoft.DDV.Elements.RotateLeft,

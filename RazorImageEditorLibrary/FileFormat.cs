@@ -1,5 +1,8 @@
 ﻿namespace RazorImageEditorLibrary
 {
+    /// <summary> 
+    /// Represents the supported file formats.
+    /// </summary>
     public class FileFormat
     {
         public static string PDF = "pdf";

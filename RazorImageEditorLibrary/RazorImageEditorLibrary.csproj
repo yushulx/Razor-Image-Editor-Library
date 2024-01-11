@@ -1,9 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
+    <PackageId>RazorImageEditorLibrary</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>yushulx</Authors>
+    <Company>Dynamsoft</Company>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Description>A Razor Class Library built using the Dynamsoft Document Viewer SDK, which
+      is designed to offer a range of viewers for configuring and executing various document
+      processing workflows, such as image editing and format conversion.</Description>
+    <PackageProjectUrl>https://github.com/yushulx/Razor-Image-Editor-Library</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/yushulx/Razor-Image-Editor-Library</RepositoryUrl>
+    <PackageTags>
+      document;image;editor;converter;wasm;webassembly</PackageTags>
+    <PackageReleaseNotes>
+      - Initial release
+    </PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 
@@ -13,6 +31,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace RazorImageEditorLibrary
 {
-    public class ImageFormat
+    public class FileFormat
     {
         public static string PDF = "pdf";
         public static string TIFF = "tiff";

@@ -12,24 +12,6 @@
     <div class="spinner"></div>
 </div>
 
-
-
-@* <div class="editor" style="@(isReady ? "display: flex;" : "display: none;")">
-    <div class="container">
-        
-
-        <div class="document-viewer">
-            <div id="browse-viewer"></div>
-        </div>
-    </div>
-
-    <div class="container" style="@(showEditor ? "display: block;" : "display: none;")">
-        <div class="document-viewer">
-            <div id="edit-viewer"></div>
-        </div>
-    </div>
-</div> *@
-
 <div id="imageGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 600px);gap: 5px;">
     <div class="container">
         <h1>Image Editor</h1>
@@ -99,8 +81,8 @@
     private bool isLoading = false;
     private ImageEditorJsInterop? imageEditorJsInterop;
     private DocumentManager? documentManager;
-    private string[] formats = new string[] { ImageFormat.PDF, ImageFormat.TIFF, ImageFormat.JPEG, ImageFormat.PNG };
-    private string selectedValue = ImageFormat.PDF;
+    private string[] formats = new string[] { FileFormat.PDF, FileFormat.TIFF, FileFormat.JPEG, FileFormat.PNG };
+    private string selectedValue = FileFormat.PDF;
     private ElementReference inputFile;
     private bool isZip = false;
     private bool showEditor = true;
@@ -115,12 +97,16 @@
     {
         if (imageEditorJsInterop == null) return;
         isLoading = true;
-        await imageEditorJsInterop.SetLicense(licenseKey);
-        documentManager = await imageEditorJsInterop.CreateDocumentManager();
-        await documentManager.LoadPdfWasm();
-        await documentManager.CreateBrowseViewer("browse-viewer");
-        await documentManager.CreateEditViewer("edit-viewer");
-        isReady = true;
+        int ret = await imageEditorJsInterop.SetLicense(licenseKey);
+        if (ret == 0)
+        {
+            documentManager = await imageEditorJsInterop.CreateDocumentManager();
+            await documentManager.LoadPdfWasm();
+            await documentManager.CreateBrowseViewer("browse-viewer");
+            await documentManager.CreateEditViewer("edit-viewer");
+            isReady = true;
+        }
+        
         isLoading = false;
     }
 

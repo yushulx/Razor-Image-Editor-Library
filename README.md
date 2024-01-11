@@ -95,7 +95,7 @@ Represents the file format of the output file.
 ## Example
 - [Blazor Image Editor/Converter](https://github.com/yushulx/Razor-Image-Editor-Library/tree/main/example)
 
-    ![blazor image editor/converter](https://www.dynamsoft.com/codepool/img/2024/01/blazor-image-editor-converter.png)
+    ![blazor image editor/converter](https://camo.githubusercontent.com/5b3bf150cba405a81c50f61d7b8da6612fc27276e82b6dab116b156b56836004/68747470733a2f2f7777772e64796e616d736f66742e636f6d2f636f6465706f6f6c2f696d672f323032342f30312f626c617a6f722d696d6167652d656469746f722d636f6e7665727465722e706e67)
 
 ## Build
 ```bash

@@ -157,10 +157,10 @@
 
         if (await documentManager.ExistPDF(inputFile))
         {
+            isLoading = true;
             while (!documentManager.IsPDFReady)
             {
-                isLoading = true;
-                await Task.Delay(30);
+                await Task.Delay(1000);
             }
             isLoading = false;
         }

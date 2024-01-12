@@ -12,22 +12,24 @@
     <div class="spinner"></div>
 </div>
 
-<div id="imageGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 600px);gap: 5px;">
+<div id="imageGrid"
+    style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 600px);gap: 5px;">
     <div class="container">
         <h1>Image Editor</h1>
         <div class="row">
             <label>Get a License key from <a href="https://www.dynamsoft.com/customer/license/trialLicense?product=ddv"
-                                          target="_blank">here</a>
+                    target="_blank">here</a>
             </label>
             <div class="filler"></div>
             <input type="text" placeholder="@licenseKey" @bind="licenseKey">
             <button @onclick="Activate">Activate SDK</button>
-        
+
         </div>
 
         <div style="margin: 10px 0;">
             <b>File source: </b>
-            <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff" @onchange="LoadFile" multiple />
+            <input type="file" @ref="inputFile" accept="application/pdf,image/png,image/jpeg,image/tiff"
+                @onchange="LoadFile" multiple />
             <button @onclick="Toggle">@buttonText</button>
         </div>
 
@@ -62,16 +64,16 @@
             <input type="checkbox" @bind="isZip" style="margin: 0 2px;" />Zip
             <button @onclick="ConvertImage">Convert</button>
         </div>
-    
+
     </div>
 
     <div class="container">
-        
+
         <div id="videoview">
             <div id="videoContainer"></div>
         </div>
     </div>
-    
+
     <div class="container">
         <div class="document-viewer">
             <div id="browse-viewer"></div>
@@ -113,10 +115,10 @@
         if (ret == 0)
         {
             documentManager = await imageEditorJsInterop.CreateDocumentManager();
-            _ = documentManager.LoadPdfWasm();
             await documentManager.CreateBrowseViewer("browse-viewer");
             await documentManager.CreateEditViewer("edit-viewer");
             isReady = true;
+            _ = documentManager.LoadPdfWasm();
         }
 
         isLoading = false;
@@ -257,7 +259,7 @@
         try
         {
             IJSObjectReference canvas = await cameraEnhancer.AcquireCameraFrame();
-            await documentManager.LoadCanvas(canvas);   
+            await documentManager.LoadCanvas(canvas);
         }
         catch (Exception ex)
         {

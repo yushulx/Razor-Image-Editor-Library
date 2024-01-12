@@ -69,6 +69,7 @@ namespace RazorImageEditorLibrary
         /// <summary>
         /// Checks whether input files contain PDF.
         /// </summary>
+        /// <param name="inputFile">A reference to the input file.</param>
         public async Task<bool> ExistPDF(ElementReference inputFile)
         {
             return await _module.InvokeAsync<bool>("existPDF", inputFile);

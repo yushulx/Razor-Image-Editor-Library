@@ -307,6 +307,24 @@ export function getFileCount(element) {
     return element.files.length;
 }
 
+function endsWith(str, searchString, length) {
+    if (length === undefined || length > str.length) {
+        length = str.length;
+    }
+    return str.substring(length - searchString.length, length) === searchString;
+}
+
+export function existPDF(element) {
+    let files = element.files
+    for (let i = 0; i < files.length; i++) {
+        if (endsWith(files[i].name, ".pdf")) {
+            return true;
+        }  
+    }
+
+    return false;
+}
+
 export function readFileData(element, index) {
     if (!Dynamsoft) return;
     let file = element.files[index];

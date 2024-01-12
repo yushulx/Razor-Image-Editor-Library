@@ -113,12 +113,12 @@
         if (ret == 0)
         {
             documentManager = await imageEditorJsInterop.CreateDocumentManager();
-            await documentManager.LoadPdfWasm();
+            _ = documentManager.LoadPdfWasm();
             await documentManager.CreateBrowseViewer("browse-viewer");
             await documentManager.CreateEditViewer("edit-viewer");
             isReady = true;
         }
-        
+
         isLoading = false;
     }
 
@@ -151,9 +151,20 @@
         await cameraEnhancer.SetVideoElement("videoContainer");
     }
 
-    public async Task LoadFile()
+    public async Task LoadFile(ChangeEventArgs e)
     {
         if (documentManager == null) return;
+
+        if (await documentManager.ExistPDF(inputFile))
+        {
+            while (!documentManager.IsPDFReady)
+            {
+                isLoading = true;
+                await Task.Delay(30);
+            }
+            isLoading = false;
+        }
+
         await documentManager.LoadFile(inputFile);
     }
 

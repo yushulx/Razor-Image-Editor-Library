@@ -14,7 +14,7 @@ namespace RazorImageEditorLibrary
         private IJSObjectReference? browseViewer = null, editViewer = null;
         private DotNetObjectReference<DocumentManager> objRef;
         private bool _disposed = false;
-
+        public bool IsPDFReady = false;
         /// <summary>
         /// Initializes a new instance of the DocumentManager class.
         /// </summary>
@@ -67,6 +67,14 @@ namespace RazorImageEditorLibrary
         }
 
         /// <summary>
+        /// Checks whether input files contain PDF.
+        /// </summary>
+        public async Task<bool> ExistPDF(ElementReference inputFile)
+        {
+            return await _module.InvokeAsync<bool>("existPDF", inputFile);
+        }
+
+        /// <summary>
         /// Creates a browse viewer.
         /// </summary>
         /// <param name="elementId">The ID of the element to create the viewer in.</param>
@@ -101,6 +109,7 @@ namespace RazorImageEditorLibrary
         public async Task LoadPdfWasm()
         {
             await _module.InvokeVoidAsync("loadPdfWasm", _jsObjectReference);
+            IsPDFReady = true;
         }
 
         /// <summary>

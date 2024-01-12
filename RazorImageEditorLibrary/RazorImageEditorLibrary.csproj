@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>RazorImageEditorLibrary</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>yushulx</Authors>
     <Company>Dynamsoft</Company>
     <TargetFramework>net7.0</TargetFramework>
@@ -17,7 +17,7 @@
     <PackageTags>
       document;image;editor;converter;wasm;webassembly</PackageTags>
     <PackageReleaseNotes>
-      - Initial release
+      - Added ExistPDF() method to check input PDF file.
     </PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

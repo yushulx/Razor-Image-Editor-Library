@@ -77,6 +77,7 @@ Represents the file format of the output file.
 
 ### DocumentManager Class
 - `Task LoadPdfWasm()`: Loads the PDF reader wasm module.
+- `Task<bool> ExistPDF(ElementReference inputFile)`: Checks whether the input file is a PDF file.
 - `Task CreateEditViewer(string elementId)`: Creates an edit viewer instance.
 - `Task CreateBrowseViewer(string elementId)`: Creates a browse viewer instance.
 - `Task LoadFile(ElementReference inputFile)`: Loads an input file to the browse viewer.
